@@ -1,0 +1,36 @@
+const DBSOURCE = "usersdb.sqlite";
+var sqlite3 = require('sqlite3').verbose()
+var jwt = require('jsonwebtoken');
+var bcrypt = require('bcryptjs');
+
+let db = new sqlite3.Database(DBSOURCE, (err) => {
+    if (err) {
+      // Cannot open database
+      console.error(err.message)
+      throw err
+    } 
+    else {        
+        var salt = bcrypt.genSaltSync(10);
+        
+        db.run(`CREATE TABLE Users (
+            
+            firstName text, 
+            lastName text,
+            email text, 
+            password text           
+            
+            )`,
+        (err) => {
+            if (err) {
+                // Table already created
+            } else{
+                // Table just created, creating some rows
+                var insert = 'INSERT INTO Users (firstName, lastName,  email, password) VALUES (?,?,?,?)'
+                db.run(insert, ["John", "Doe", "test@email.com", "NmIzYTU1ZTAyNjFiMDMwNDE0M2Y4MDVhMjQ5MjRkMGMxYzQ0NTI0ODIxMzA1ZjMxZDkyNzc4NDNiOGExMGY0ZQ=="])
+
+            }
+        });  
+    }
+});
+
+module.exports = db
